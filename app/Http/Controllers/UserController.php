@@ -12,7 +12,13 @@ class UserController extends Controller
 {
 
 
-    public function store(Request $request){
+    /*
+        name:test,
+        email:test@gmail.com,
+        password:147,
+        password_confirmation:147
+    */
+    public function register(Request $request){
         $fields = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
@@ -35,7 +41,11 @@ class UserController extends Controller
         return response($response, 201);
     }
 
-    public function register(Request $request){
+    /*
+        email:test@gmail.com,
+        password:147
+    */
+    public function login(Request $request){
         validator($request->all(), [
             'email' => ['required', 'email'],
             'password' => ['required']
@@ -52,10 +62,47 @@ class UserController extends Controller
     }
 
 
+    /*
+        enter token only in header
+    */
+    public function logout(){
 
+        auth()->user()->tokens()->delete();
+        return [
+            'message' => 'Logged out'
+        ];
+    }
 
+    /*public function login(Request $request){
+        $fields = $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string'
+        ]);
 
+        $user = User::where('email', $fields['email'])->first();
 
+        if(!$user || !Hash::check($fields['password'], $user->password)){
+            return response([
+                'message' => 'Bad Creds'
+            ], 401);
+        }
 
+        $token = $user->createToken('myapptoken')->plainTextToken;
+
+        $response = [
+            'user' => $user,
+            'token' => $token
+        ];
+
+        return response($response, 201);
+    }*/
+
+    /*public function token($id){
+        $user = User::find($id);
+        return [
+            //'message' => $user->tokens->remember_token
+            'message' => $user->tokens
+        ];
+    }*/
 
 }

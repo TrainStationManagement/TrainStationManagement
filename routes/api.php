@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,20 +17,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-
-
-
 //---------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------
 //-------------------------User----------------------------------------------------------------------
-Route::post('/register', [UserController::class, 'register']);
-//Route::post('/login', [AuthController::class, 'login']);
-Route::get('/token/{id}', [AuthController::class, 'token']);
+//Route::post('/register', [UserController::class, 'register']);
+//Route::get('/token/{id}', [UserController::class, 'token']);
+Route::post('/user/register', [UserController::class, 'register']);
+Route::post('/user/login', [UserController::class, 'login']);
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 //---------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------
-
-
 
 
 //---------------------------------------------------------------------------------------------------
@@ -47,7 +45,7 @@ Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::get('/products/search/{name}', [ProductController::class, 'search']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/user/logout', [UserController::class, 'logout']);
 
     Route::post('/products', [ProductController::class, 'store']);
     Route::put('/products/{id}', [ProductController::class, 'update']);
@@ -56,10 +54,3 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 //---------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------
-
-
-
-Route::post('/user', [UserController::class, 'store']);
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
